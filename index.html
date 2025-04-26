@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoodTracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #fff;
+      color: #333;
+    }
+
+    /* Navbar Styling */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background-color: #000;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #ff6719;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ff6719;
+    }
+
+    .get-started-btn {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .get-started-btn:hover {
+      background-color: green;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 120px 50px 80px;
+      flex-wrap: wrap;
+      color: blue;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      height: 100vh;
+    }
+
+    /* Video as background */
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Ensures the video stays behind the content */
+    }
+
+    .hero-text {
+      max-width: 520px;
+      z-index: 1; /* Keeps text on top of the video */
+      color: white; /* Make sure text color stands out */
+      position: relative;
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .hero-image img {
+      width: 350px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    /* About Section */
+    .about {
+      padding: 80px 50px;
+      text-align: center;
+      background: linear-gradient(to bottom, #fff, #f9f9f9);
+    }
+
+    .about h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .about p {
+      font-size: 18px;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #555;
+    }
+
+    /* Contact Section */
+    .contact {
+      background-color: #f9f9f9;
+      padding: 80px 50px;
+      text-align: center;
+    }
+
+    .contact h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .contact p {
+      font-size: 18px;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #555;
+    }
+
+    .contact .contact-info {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .contact .contact-info div {
+      max-width: 300px;
+      margin: 10px;
+    }
+
+    .contact .contact-info div img {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+
+    /* Auth Section */
+    #auth-section {
+      background-color: #fefefe;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    #auth-section h2 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    #auth-section p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    #auth-section .auth-buttons button {
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .sign-up {
+      background-color: #FF6719;
+      color: white;
+    }
+
+    .sign-in {
+      background-color: white;
+      color: #FF6719;
+      border: 2px solid #FF6719;
+    }
+
+    .sign-in:hover,
+    .sign-up:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">Serenity</div>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="get-started-btn" onclick="document.getElementById('auth-section').scrollIntoView()">Get Started</button>
+  </nav>
+
+  <!-- Hero Section with Video Background -->
+  <section class="hero">
+    <video autoplay loop muted>
+      <source src="bg.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-text">
+      <h1>Track Your Mood Daily</h1>
+      <p>Your personal mental health companion to reflect, grow, and feel better.</p>
+      <button class="get-started-btn" onclick="document.getElementById('auth-section').scrollIntoView()">Get Started</button>
+    </div>
+    <div class="hero-image">
+      <img src="logo.jpg" alt="Mood Tracking">
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <h2>Why serenity ?</h2>
+    <p>
+      MoodTracker helps you log your feelings every day with just a tap. Understand your emotions over time,
+      identify triggers, and build healthy habits that support your well-being. Whether you're managing stress,
+      anxiety, or just want to stay in touch with yourself, MoodTracker makes mental wellness simple and effective.
+    </p>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>If you have any questions or need support, feel free to reach out to us. We're here to help!</p>
+    <div class="contact-info">
+      <div>
+        <img src="phone.jpg" alt="Phone Icon">
+        <h3>Phone</h3>
+        <p>+91 3784567890</p>
+      </div>
+      <div>
+        <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email Icon">
+        <h3>Email</h3>
+        <p>support@moodtracker.com</p>
+      </div>
+      <div>
+        <img src="loc.jpg" alt="Location Icon">
+        <h3>Location</h3>
+        <p>Bhubaneswar, Odisha</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Auth Section -->
+  <section id="auth-section">
+    <h2>Join Us Today!</h2>
+    <p>Choose an option below to continue</p>
+    <div class="auth-buttons">
+      <button class="sign-up" onclick="window.location.href='signup.html'">Sign Up</button>
+      <button class="sign-in" onclick="window.location.href='signin.html'">Sign In</button>
+    </div>
+  </section>
+</body>
+
+</html>

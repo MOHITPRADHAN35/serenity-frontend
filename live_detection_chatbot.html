@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MoodTracker - Live Detection & Chatbot</title>
+  <style>
+    
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f5f8fb;
+  color: #333;
+  line-height: 1.6;
+  padding: 0 20px;
+}
+
+/* Navigation Bar */
+nav {
+  background-color: #000000;
+  color: #f4753a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+nav ul li a:hover {
+  opacity: 0.7;
+}
+
+/* Section Styling */
+section {
+  margin: 40px auto;
+  max-width: 1000px;
+}
+
+section h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #f4753a;
+}
+
+/* Content Layout: side-by-side boxes */
+.content-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Detection and Chatbox Styling */
+.detection-box,
+.chatbox {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex: 1 1 48%;
+  max-width: 48%;
+}
+
+.detection-box h3,
+.chatbox h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Video and Canvas Styling */
+video,
+canvas {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: #000;
+}
+
+/* Emotion Result */
+#emotionResult {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  color: #f4753a;
+}
+
+/* Chatbox Styles */
+.chat-log {
+  height: 200px;
+  overflow-y: auto;
+  background: #f0f4f8;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+}
+
+#chatMessage {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+#sendBtn {
+  background: #f4753a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#sendBtn:hover {
+  background: #357ab8;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .content-box {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .detection-box,
+  .chatbox {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">Serenity</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#live-detection-chatbot">Live Detection & Chatbot</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Section -->
+  <section id="live-detection-chatbot">
+    <h2>Live Detection and Chatbot</h2>
+    <div class="content-box">
+
+      <!-- Emotion Detection -->
+      <div class="detection-box">
+        <h3>🎥 Real-Time Emotion Detection</h3>
+        <video id="video" width="320" height="240" autoplay muted></video>
+        <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+        <div id="emotionResult">Loading...</div>
+      </div>
+
+      <!-- Chatbot -->
+      <div class="chatbox">
+        <h3>🤖 Serenity Chatbot </h3>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="input-area">
+          <input type="text" id="chatMessage" placeholder="Type your message...">
+          <button id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script>
+    // Webcam setup
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const emotionResult = document.getElementById("emotionResult");
+    const ctx = canvas.getContext("2d");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+
+        setInterval(() => {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(async (blob) => {
+            const formData = new FormData();
+            formData.append("file", blob, "frame.jpg");
+
+            try {
+              const response = await fetch("http://localhost:8000/detect_emotion/", {
+                method: "POST",
+                body: formData
+              });
+              const data = await response.json();
+              if (data.emotion) {
+                emotionResult.textContent = `😊 Emotion: ${data.emotion} (${(data.confidence * 100).toFixed(2)}%)`;
+              } else {
+                emotionResult.textContent = "No face detected";
+              }
+            } catch (err) {
+              emotionResult.textContent = "Error detecting emotion";
+            }
+          }, "image/jpeg");
+        }, 1000);
+      })
+      .catch(err => {
+        emotionResult.textContent = "Could not access webcam";
+      });
+
+    // Chatbot
+    async function sendMessage() {
+      const input = document.getElementById("chatMessage");
+      const chatLog = document.getElementById("chatLog");
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      // Display user message
+      const userMsg = document.createElement("p");
+      userMsg.classList.add("user");
+      userMsg.textContent = "🤔 You: " + message;
+      chatLog.appendChild(userMsg);
+      input.value = "";
+
+      try {
+        const response = await fetch("http://localhost:8000/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        const botReply = data.reply || "Sorry, something went wrong.";
+
+        const botMsg = document.createElement("p");
+        botMsg.classList.add("bot");
+        botMsg.textContent = "🤖 Serenity: " + botReply;
+        chatLog.appendChild(botMsg);
+
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        const botMsg = document.createElement("p");
+        botMsg.classList.add("bot");
+        botMsg.textContent = "🤖 Serenity: Error connecting to chatbot.";
+        chatLog.appendChild(botMsg);
+      }
+    }
+
+    document.getElementById("chatMessage").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
