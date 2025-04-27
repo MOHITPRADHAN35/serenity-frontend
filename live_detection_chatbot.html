@@ -232,7 +232,7 @@ canvas {
             formData.append("file", blob, "frame.jpg");
 
             try {
-              const response = await fetch("https://serenity-backend1-846464012306.us-central1.run.app/detect_emotion/", {
+              const response = await fetch("https://serenity-backend2-846464012306.us-central1.run.app/detect_emotion/", {
                 method: "POST",
                 body: formData
               });
@@ -268,7 +268,7 @@ canvas {
       input.value = "";
 
       try {
-        const response = await fetch("https://serenity-backend1-846464012306.us-central1.run.app/api/chat", {
+        const response = await fetch("https://serenity-backend2-846464012306.us-central1.run.app/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: message })
